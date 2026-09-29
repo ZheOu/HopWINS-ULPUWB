@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "name": "MCU",
+            "path": "MCU"
+        },
+        {
+            "name": "Python",
+            "path": "Python"
+        },
+        {
+            "name": "PCB",
+            "path": "PCB"
+        },
+        {
+            "name": "Repository",
+            "path": "."
+        }
+    ]
+}

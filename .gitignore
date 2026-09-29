@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Repository workspace
+/.vscode/*
+!/.vscode/settings.json
+
+# Repository-local output
+/debug.log
+/.ruff_cache/
+
+# Paper project
+/Paper/
