@@ -11,10 +11,22 @@
         {
             "name": "PCB",
             "path": "PCB"
-        },
-        {
-            "name": "Repository",
-            "path": "."
         }
-    ]
+    ],
+    "settings": {
+        "stm32cube-ide-clangd.path": "cube",
+        "stm32cube-ide-clangd.arguments": [
+            "starm-clangd",
+            "--query-driver=${env:CUBE_BUNDLE_PATH}/st-arm-clang/21.1.1+st.7/bin/starm-clang*",
+            "--query-driver=${env:CUBE_BUNDLE_PATH}/st-arm-clang/21.1.1+st.7/bin/starm-clang++*"
+        ],
+        "vscode-serial-monitor.customBaudRates": [
+            2000000,
+            5000000
+        ],
+        "cmake.environment": {
+            "PATH": "/Users/mongo/.vscode/extensions/stmicroelectronics.stm32cube-ide-build-cmake-1.47.0-darwin-x64/resources/cube-cmake/darwin/x86_64:/Users/mongo/.vscode/extensions/stmicroelectronics.stm32cube-ide-core-1.5.0-darwin-x64/resources/binaries/darwin/x86_64:c:${env.PATH}"
+        },
+        "git.autofetch": true
+    }
 }

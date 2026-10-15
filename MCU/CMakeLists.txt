@@ -19,7 +19,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Set the project name
-set(CMAKE_PROJECT_NAME HopWINS-ULPUWB-MCU-STM32F411)
+set(CMAKE_PROJECT_NAME HopWINS-ULPUWB-MCU)
 
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
@@ -44,12 +44,12 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
+    Boards/HopWINS-ULPUWB-PCB-UWB+STM32/board.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
+    Boards/HopWINS-ULPUWB-PCB-UWB+STM32
 )
 
 # Add project symbols (macros)
