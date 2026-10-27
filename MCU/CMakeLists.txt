@@ -52,6 +52,49 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Boards/HopWINS-ULPUWB-PCB-UWB+STM32
 )
 
+set(DW1000_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/Devices/UWB/DW1000)
+
+add_library(hopwins_dw1000_driver STATIC
+    ${DW1000_DIR}/deca_device.c
+    ${DW1000_DIR}/deca_params_init.c
+    ${DW1000_DIR}/deca_range_tables.c
+    ${DW1000_DIR}/hopwins_dw1000.c
+)
+
+target_include_directories(hopwins_dw1000_driver
+    PUBLIC
+        ${DW1000_DIR}
+    PRIVATE
+        Boards/HopWINS-ULPUWB-PCB-UWB+STM32
+)
+
+target_link_libraries(hopwins_dw1000_driver PUBLIC stm32cubemx)
+
+set(SERIAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Services/Communication/Serial)
+
+add_library(hopwins_serial_service STATIC
+    ${SERIAL_DIR}/hopwins_serial.c
+)
+
+target_include_directories(hopwins_serial_service
+    PUBLIC
+        ${SERIAL_DIR}
+    PRIVATE
+        Boards/HopWINS-ULPUWB-PCB-UWB+STM32
+)
+
+target_link_libraries(hopwins_serial_service PUBLIC stm32cubemx)
+
+set(UWB_SERVICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Services/UWB)
+
+add_library(hopwins_uwb_service STATIC
+    ${UWB_SERVICE_DIR}/hopwins_uwb_service.c
+)
+
+target_include_directories(hopwins_uwb_service PUBLIC ${UWB_SERVICE_DIR})
+target_link_libraries(hopwins_uwb_service
+    PRIVATE hopwins_dw1000_driver hopwins_serial_service stm32cubemx)
+
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
@@ -63,6 +106,9 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
+    hopwins_uwb_service
+    hopwins_dw1000_driver
+    hopwins_serial_service
 
     # Add user defined libraries
 )

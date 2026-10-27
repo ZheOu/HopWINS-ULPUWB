@@ -21,6 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "hopwins_serial.h"
+#include "hopwins_uwb_service.h"
 
 /* USER CODE END Includes */
 
@@ -104,6 +106,19 @@ int main(void)
   MX_CRC_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
+  if (hopwins_serial_init() != HOPWINS_SERIAL_STATUS_OK)
+  {
+    Error_Handler();
+  }
+  (void)hopwins_serial_send((const uint8_t *)"[MCU] boot; peripherals ready\r\n",
+                            sizeof("[MCU] boot; peripherals ready\r\n") - 1U);
+
+  if (!hopwins_uwb_init() || !hopwins_uwb_periodic_tx_start())
+  {
+    (void)hopwins_serial_send((const uint8_t *)"[MCU] UWB service failed\r\n",
+                              sizeof("[MCU] UWB service failed\r\n") - 1U);
+    Error_Handler();
+  }
 
   /* USER CODE END 2 */
 
@@ -114,6 +129,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    hopwins_uwb_periodic_tx_process();
   }
   /* USER CODE END 3 */
 }
@@ -130,7 +146,7 @@ void SystemClock_Config(void)
   /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -139,8 +155,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 160;
+  RCC_OscInitStruct.PLL.PLLM = 15;
+  RCC_OscInitStruct.PLL.PLLN = 96;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -247,7 +263,7 @@ static void MX_USART1_UART_Init(void)
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.Mode = UART_MODE_TX;
   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart1.Init.OverSampling = UART_OVERSAMPLING_8;
   if (HAL_UART_Init(&huart1) != HAL_OK)
